@@ -18,9 +18,36 @@ app.callback( function( error ){
   process.exit( error ? 1 : 0 );
 });
 
-app.step( 'echo hello world', function(){
-  console.log( 'hello world' );
+require( './steps/supe/create-supervisor' )( app );
+
+app.step( 'start main citizen', function(){
+
+  app.step( 'setup supervisor behavior to main citizen', function(){
+    var supervisor = app.get( 'supervisor' );
+
+    supervisor.hook.add( 'brain-shutdown', 'exit', function(){
+      console.log( 'action=end-app reason="brain shutdown"' );
+      app.end();
+    });
+
+    supervisor.hook.add( 'brain-excessive-crash', 'exit', function(){
+      console.log( 'action=end-app reason="brain crashed excessively"' );
+      app.end();
+    });
+
+    app.next();
+  });
+
+  app.step( 'start citizen', function(){
+    app.get( 'supervisor' ).start( 'brain', './citizens/brain' );
+    app.next();
+  });
+
   app.next();
+});
+
+app.step( 'wait', function(){
+  // do nothing
 });
 
 app.start();
