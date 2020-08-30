@@ -1,0 +1,17 @@
+{
+  "name": "oet-automation",
+  "version": "1.0.0",
+  "description": "process automation for OET Exam Scheduling",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "akamaozu <uzo@designbymobius.ca> (http://designbymobi.us/)",
+  "license": "MIT",
+  "dependencies": {
+    "cjs-task": "^2.3.0",
+    "cjs-task-fs-steps": "^1.0.0",
+    "supe": "^0.5.2",
+    "supe-addon-citizen-supervision-api": "^1.0.8"
+  }
+}
