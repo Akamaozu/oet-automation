@@ -23,32 +23,15 @@ app.step( 'if an error isnt caught, end app', function(){
   app.next();
 });
 
-app.step( 'log timestamp every second', function(){
+require( '../../steps/supe/create-citizen' )( app );
 
-  setInterval( log_timestamp, 1000 );
+app.step( 'setup app', function(){
+  var path_to_root = app.get( 'path-to-root' );
+
+  require( path_to_root + '/steps/browser/start' )( app, { headless: false });
+  require( path_to_root + '/steps/browser/load-page' )( app, { url: 'https://registration.occupationalenglishtest.org/Display.aspx?tabid=Login' });
+
   app.next();
-
-  function log_timestamp(){
-    var task = create_task();
-
-    task.callback( function( error ){
-      if( ! error ) console.log( 'action=log-timestamp time="'+ task.get( 'timestamp' ) + '"' );
-    });
-
-    require( '../../steps/datetime/get-timestamp' )( task );
-
-    task.start();
-  }
-});
-
-app.step( 'throw error after 5 seconds', function(){
-
-  setTimeout( throw_error, 5000 );
-  app.next();
-
-  function throw_error(){
-    throw new Error( 'something went wrong, apparently' );
-  }
 });
 
 app.step( 'wait', function(){
