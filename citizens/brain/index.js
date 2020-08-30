@@ -18,6 +18,11 @@ app.callback( function( error ){
   process.exit( error ? 1 : 0 );
 });
 
+app.step( 'if an error isnt caught, end app', function(){
+  process.on( 'uncaughtException', app.end );
+  app.next();
+});
+
 app.step( 'log timestamp every second', function(){
 
   setInterval( log_timestamp, 1000 );
