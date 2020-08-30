@@ -29,7 +29,7 @@ app.step( 'setup app', function(){
   var path_to_root = app.get( 'path-to-root' );
 
   require( path_to_root + '/steps/browser/start' )( app, { headless: false });
-  require( path_to_root + '/steps/browser/load-page' )( app, { url: 'https://registration.occupationalenglishtest.org/Display.aspx?tabid=Login' });
+  require( path_to_root + '/steps/browser/load-page' )( app, { url: 'https://registration.myoet.com/login.jsp' });
 
   app.next();
 });
