@@ -39,7 +39,7 @@ app.step( 'start main citizen', function(){
   });
 
   app.step( 'start citizen', function(){
-    app.get( 'supervisor' ).start( 'brain', './citizens/brain' );
+    app.get( 'supervisor' ).start( 'brain', './citizens/brain', { retries: 1, duration: 0.25 });
     app.next();
   });
 

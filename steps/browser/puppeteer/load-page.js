@@ -30,7 +30,7 @@ module.exports = function( task, config ){
     var page = task.get( 'browser-page' );
 
     if( ! page ) throw new Error( 'no browser page instance stored -- are you sure browser has been started?' );
-    if( config.verbose ) console.log( ' - [browser][page] navigating to "' + config.url + '"' );
+    if( config.verbose ) console.log( 'action=log-navigation-request url="' + config.url + '"' );
 
     page.goto( config.url )
       .then( function(){

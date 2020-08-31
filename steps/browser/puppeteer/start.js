@@ -42,12 +42,12 @@ module.exports = function( task, config ){
       ]
     })
       .then( function( browser ){
-        if( config.verbose ) console.log( ' - [browser] started' );
+        if( config.verbose ) console.log( 'action=start-browser success=true' );
         task.set( 'browser', browser );
         return browser.newPage();
       })
       .then( function( page ){
-        if( config.verbose ) console.log( ' - [browser][page] started' );
+        if( config.verbose ) console.log( 'action=open-browser-page success=true' );
         task.set( 'browser-page', page );
         return page;
       })
@@ -66,11 +66,7 @@ module.exports = function( task, config ){
             break;
 
             default:
-              var error_msg = 'no current mapping for browser method "' + method + '"';
-              console.log( ' - [browser][error] ' + error_msg );
-
-              throw new Error( error_msg );
-            break;
+              throw new Error( 'no current mapping for browser method "' + method + '"' );
           }
         }
 
@@ -85,11 +81,7 @@ module.exports = function( task, config ){
             break;
 
             default:
-              var error_msg = 'no current mapping for browser property "' + method + '"';
-              console.log( ' - [browser][error] ' + error_msg );
-
-              throw new Error( error_msg );
-            break;
+              throw new Error( 'no current mapping for browser property "' + method + '"' );
           }
         }
 
@@ -130,7 +122,7 @@ module.exports = function( task, config ){
         }
 
         page.on( 'domcontentloaded', function(){
-          if( config.verbose ) console.log( ' - [browser][page] navigated to "' + page.url() + '"' );
+          if( config.verbose ) console.log( 'action=browser-load-url success=true url="' + page.url() + '"' );
 
           var task_to_progress = task_control_stack[ task_control_stack.length - 1 ];
           if( task_to_progress ) task_to_progress.next();
@@ -141,7 +133,7 @@ module.exports = function( task, config ){
           if( ! config.show_console_output ) return;
 
           var args = Array.prototype.slice.call( arguments );
-          args.unshift( ' - [browser][page][console]' );
+          args.unshift( 'action=log-browser-console-output output=' );
           console.log.apply( console, args );
         });
 
