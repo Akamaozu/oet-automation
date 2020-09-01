@@ -31,6 +31,7 @@ module.exports = function( task, config ){
   task.step( 'start puppeteer', function(){
 
     puppeteer.launch({
+      defaultViewport: null,
       headless: config.headless,
       ignoreHTTPSErrors: config.ignore_ssl_errors,
       args: [
@@ -129,12 +130,11 @@ module.exports = function( task, config ){
         });
 
         // pipe page logs
-        page.on( 'console', function(){
+        page.on( 'console', function( output ){
           if( ! config.show_console_output ) return;
 
           var args = Array.prototype.slice.call( arguments );
-          args.unshift( 'action=log-browser-console-output output=' );
-          console.log.apply( console, args );
+          console.log( 'action=pipe-browser-console entry="'+ output.text() +'"' );
         });
 
         page.on( 'request', function( request ){
