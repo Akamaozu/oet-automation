@@ -41,6 +41,12 @@ require( path_to_root + '/steps/oet/go-to-login-page' )( app );
 require( path_to_root + '/steps/oet/login' )( app );
 require( path_to_root + '/steps/oet/get-account-details' )( app );
 require( path_to_root + '/steps/oet/go-to-start-application-page' )( app );
+require( path_to_root + '/steps/oet/get-valid-application-professions' )( app );
+
+app.step( 'print professions', function(){
+  console.log( 'oet application valid professions: ', app.get( 'oet-professions' ) );
+  app.next();
+});
 
 app.step( 'wait a bit, then exit', function(){
   var sec_in_ms = 1000,
@@ -48,7 +54,7 @@ app.step( 'wait a bit, then exit', function(){
       delay_ms = delay_s * sec_in_ms;
 
   console.log( 'action=delay-exit duration='+ delay_s +'s' );
-  setTimeout( app.end, delay_ms );
+  setTimeout( app.next, delay_ms );
 });
 
 app.start();
