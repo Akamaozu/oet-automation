@@ -36,15 +36,20 @@ app.step( 'load oet credentials', function(){
   app.next();
 });
 
-require( path_to_root + '/steps/browser/start' )( app, { headless: false });
+require( path_to_root + '/steps/browser/start' )( app, { headless: false, show_console_output: true });
 require( path_to_root + '/steps/oet/go-to-login-page' )( app );
 require( path_to_root + '/steps/oet/login' )( app );
 require( path_to_root + '/steps/oet/get-account-details' )( app );
 require( path_to_root + '/steps/oet/go-to-start-application-page' )( app );
+require( path_to_root + '/steps/oet/get-valid-application-countries' )( app );
+require( path_to_root + '/steps/oet/get-valid-application-test-types' )( app );
 require( path_to_root + '/steps/oet/get-valid-application-professions' )( app );
 
-app.step( 'print professions', function(){
-  console.log( 'oet application valid professions: ', app.get( 'oet-professions' ) );
+app.step( 'print', function(){
+  console.log( 'oet professions: ', app.get( 'oet-professions' ) );
+  console.log( 'oet test-types: ', app.get( 'oet-test-types' ) );
+  console.log( 'oet countries: ', app.get( 'oet-countries' ) );
+
   app.next();
 });
 

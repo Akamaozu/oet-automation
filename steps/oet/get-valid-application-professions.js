@@ -6,13 +6,13 @@ module.exports = function( task, config ){
 
     page.evaluate( function(){
       var professions_dom = document.querySelectorAll( '#gwt-uid-11 > select > option' ),
-          professions = {};
+          professions = [];
 
       professions_dom.forEach( function( option ){
         var key = option.value,
             value = option.innerText;
 
-        if( key !== 'null' ) professions[ key ] = value;
+        if( key !== 'null' ) professions.push( value );
       });
 
       return professions;
