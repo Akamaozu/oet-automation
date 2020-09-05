@@ -67,12 +67,66 @@ app.step( 'print', function(){
     return dates;
   })
     .then( function( dates ){
-      var oet_application = app.get( 'oet-application' );
+      var oet_application = app.get( 'oet-application' ),
+          available_dates = dates;
 
       console.log( 'action=get-available-dates success=true profession="'+ oet_application.profession + '" country="'+ oet_application.country + '" dates=', dates );
+
+      app.set( 'oet-application-available-dates', available_dates );
       app.next();
     })
     .catch( app.end );
+});
+
+app.step( 'select test date', function(){
+  var page = app.get( 'browser-page' );
+
+  var received_responses = 0,
+      expected_responses = 2;
+
+  page.on( 'response', function( response ){
+    var source = response.url();
+
+    if( source.indexOf( 'https://registration.myoet.com/main/UIDL/?v-uiId=0' ) !== 0 ) return;
+    else received_responses += 1;
+
+    if( received_responses == expected_responses ) app.next();
+  });
+
+  page.evaluate( function(){
+    var date_select = document.querySelector( '#gwt-uid-23 > select' );
+        date_select.value = 1;
+        date_select.dispatchEvent( new Event('change') );
+
+    document.querySelector( '.v-button-primary.next' ).click();
+  })
+    .then( function(){})
+    .catch( app.end );
+});
+
+app.step( 'get available venues', function(){
+  var page = app.get( 'browser-page' );
+
+  page.evaluate( function(){
+    var venue_address_doms = document.querySelectorAll( '#gwt-uid-27 .address' ),
+        venues = [];
+
+    venue_address_doms.forEach( function( address_dom ){
+      var address = address_dom.innerText,
+          venue_dom = address_dom.parentNode,
+          venue = venue_dom.innerText.replace( address, '' ).trim();
+
+      venues.push({ name: venue, address: address });
+    });
+
+    return venues;
+  })
+    .then( function( venues ){
+      console.log( 'action=log-available-venues venues=', venues );
+      app.next();
+    })
+    .catch( app.end )
+
 });
 
 app.step( 'wait a bit, then exit', function(){
@@ -80,8 +134,10 @@ app.step( 'wait a bit, then exit', function(){
       delay_s = 10,
       delay_ms = delay_s * sec_in_ms;
 
-  console.log( 'action=delay-exit duration='+ delay_s +'s' );
-  setTimeout( app.next, delay_ms );
+  console.log( 'action=wait note="to exit, press CTRL+C"' );
+
+  // console.log( 'action=delay-exit duration='+ delay_s +'s' );
+  // setTimeout( app.next, delay_ms );
 });
 
 app.start();
