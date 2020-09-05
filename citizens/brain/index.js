@@ -2,6 +2,12 @@ var create_task = require('cjs-task'),
     path_to_root = '../..',
     app = create_task();
 
+app.set( 'oet-application', {
+  country: 'United States of America',
+  profession: 'Medicine',
+  test_types: [ 'Speaking' ]
+});
+
 app.callback( function( error ){
   var log_entry = [
     'action=exit',
@@ -44,13 +50,29 @@ require( path_to_root + '/steps/oet/go-to-start-application-page' )( app );
 require( path_to_root + '/steps/oet/get-valid-application-countries' )( app );
 require( path_to_root + '/steps/oet/get-valid-application-test-types' )( app );
 require( path_to_root + '/steps/oet/get-valid-application-professions' )( app );
+require( path_to_root + '/steps/oet/submit-application-step-1' )( app );
 
 app.step( 'print', function(){
-  console.log( 'oet professions: ', app.get( 'oet-professions' ) );
-  console.log( 'oet test-types: ', app.get( 'oet-test-types' ) );
-  console.log( 'oet countries: ', app.get( 'oet-countries' ) );
+  var page = app.get( 'browser-page' );
 
-  app.next();
+  page.evaluate( function(){
+    var date_doms = document.querySelectorAll( '#gwt-uid-23 > select > option' ),
+        dates = [];
+
+    date_doms.forEach( function( dom ){
+      if( dom.value !== 'null') dates.push({ index: dom.value, value: dom.innerText });
+    });
+
+    console.log( 'total dates found:', dates.length );
+    return dates;
+  })
+    .then( function( dates ){
+      var oet_application = app.get( 'oet-application' );
+
+      console.log( 'action=get-available-dates success=true profession="'+ oet_application.profession + '" country="'+ oet_application.country + '" dates=', dates );
+      app.next();
+    })
+    .catch( app.end );
 });
 
 app.step( 'wait a bit, then exit', function(){
