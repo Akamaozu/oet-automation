@@ -12,7 +12,8 @@ module.exports = function( task, config ){
     var profession_index = task.get( 'oet-professions' ).indexOf( oet_application.profession ),
         country_index = task.get( 'oet-countries' ).indexOf( oet_application.country ),
         expected_responses = 2,
-        received_responses = 0;
+        received_responses = 0,
+        dates_found = [];
 
     page.on( 'response', function do_exclusive_next( response ){
       var source = response.url();
@@ -27,7 +28,7 @@ module.exports = function( task, config ){
 
       var profession_select_dom = document.querySelector( '#gwt-uid-11 > select' );
           profession_select_dom.value = application.profession;
-          profession_select_dom.dispatchEvent( new Event('change') )
+          profession_select_dom.dispatchEvent( new Event('change') );
 
       var country_select_dom = document.querySelector( '#gwt-uid-15 > select' );
           country_select_dom.value = application.country;
@@ -37,6 +38,7 @@ module.exports = function( task, config ){
 
     }, { profession: profession_index + 1, country: country_index + 1 })
       .then( function(){
+        console.log( 'action=submit-application-step-1 success=true profession="'+ oet_application.profession +'" country="'+ oet_application.country + '"' );
         // do nothing; app will progress after two expected responses
       })
       .catch( task.end );
